@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>تنظيم طبقة البيانات (DAL)</title>
+    <style>
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: #f9f9f9;
+        margin: 0;
+        padding: 30px;
+        line-height: 1.8;
+        color: #333;
+      }
+
+      h1 {
+        color: #00796b;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .step {
+        background: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+        margin: 20px auto;
+        max-width: 800px;
+      }
+
+      .step h2 {
+        color: #00695c;
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+      }
+
+      .folder {
+        background-color: #e0f7fa;
+        padding: 10px 15px;
+        border-radius: 8px;
+        font-weight: bold;
+        display: inline-block;
+        margin-bottom: 10px;
+      }
+
+      .note {
+        background-color: #fff3cd;
+        border: 1px solid #ffeeba;
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 20px;
+      }
+
+      ul {
+        padding-right: 20px;
+      }
+
+      li {
+        margin-bottom: 8px;
+      }
+
+      .nav-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 40px;
+      }
+
+      .nav-buttons button {
+        background-color: #00796b;
+        color: white;
+        padding: 14px 28px;
+        font-size: 1.1rem;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .nav-buttons button:hover {
+        background-color: #004d40;
+      }
+
+      .code-container {
+        position: relative;
+        background-color: #1e1e1e;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 20px;
+        font-family: Consolas, "Courier New", monospace;
+        color: #dcdcdc;
+        direction: ltr;
+        text-align: left;
+        overflow-x: auto;
+      }
+
+      .code-container code {
+        white-space: pre;
+        display: block;
+        font-size: 0.95rem;
+      }
+
+      .copy-button,
+      .shortcut-button {
+        position: flex;
+        top: 10px;
+        left: 10px;
+        background-color: #007acc;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .copy-button,
+      .shortcut-button:hover {
+        background-color: #005a9e;
+      }
+
+      .back-button {
+        display: block;
+        margin: 40px auto 0;
+        text-align: center;
+      }
+
+      .back-button button {
+        background-color: #00796b;
+        color: white;
+        padding: 14px 28px;
+        font-size: 1.1rem;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+      }
+
+      .back-button button:hover {
+        background-color: #004d40;
+      }
+
+      .back-button {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin: 40px auto 0;
+      }
+
+      .back-button button {
+        background-color: #00796b;
+        color: white;
+        padding: 14px 28px;
+        font-size: 1.1rem;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .back-button button:hover {
+        background-color: #004d40;
+      }
+
+      /* Popup styles */
+      .popup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80%;
+        max-width: 700px;
+        max-height: 80vh;
+        overflow-y: auto;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        padding: 1.5rem;
+        z-index: 1000;
+        direction: rtl;
+        text-align: right;
+      }
+
+      .popup h2 {
+        color: #005aab;
+        margin-bottom: 1rem;
+      }
+
+      .popup .shortcut {
+        margin-bottom: 1.5rem;
+      }
+
+      .popup .shortcut img {
+        max-width: 100%;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      #overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 900;
+      }
+
+      .closeBtn {
+        background: #d33;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        border-radius: 6px;
+        cursor: pointer;
+        float: left;
+        margin-bottom: 1rem;
+      }
+
+      .closeBtn:hover {
+        background: #a00;
+      }
+    </style>
+    <!-- Prism.js CSS theme (يشبه VS Code) -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism-tomorrow.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <h1>الحين نكمل شغلنا داخل 📁 Entities</h1>
+
+    <div class="step">
+      <p>نضيف كلاس جديد وسمّيناه</p>
+      <h2><span class="folder">📄 EventCategory</span></h2>
+
+      <img
+        src="/assets/imgs/gif/EventCategory.gif"
+        style="max-width: 100%; border-radius: 15px"
+      />
+
+      <div class="code-container">
+        <button class="copy-button" onclick="copyCode(this)">نسخ الكود</button>
+        <button class="shortcut-button" data-popup-id="popup1">
+          اضغط هنا للاختصارات
+        </button>
+        <br />
+
+        <pre><code class="language-csharp">
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Eventy.DAL.Entities
+{
+    public class EventCategory
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+    }
+}
+    </code></pre>
+      </div>
+    </div>
+
+    <h1>الحين نروح داخل 📁 Context</h1>
+
+    <div class="step">
+      <p>
+        الحين، نبدأ نجهّز العقل المدبّر لطبقة البيانات، واللي هو كلاس
+        <strong>ApplicationDbContext</strong> هذا الكلاس هو اللي يتواصل مباشرة
+        مع قاعدة البيانات، ويعرّف الجداول ويربط بينها.
+      </p>
+      <h2><span class="folder">📄 ApplicationDbContext</span></h2>
+      <img
+        src="/assets/imgs/gif/ApplicationDbContext.gif"
+        style="max-width: 100%; border-radius: 15px"
+      />
+
+      <div class="code-container">
+        <button class="copy-button" onclick="copyCode(this)">نسخ الكود</button>
+        <button class="shortcut-button" data-popup-id="popup2">
+          اضغط هنا للاختصارات
+        </button>
+
+        <br />
+
+        <pre><code class="language-csharp">
+using Eventy.DAL.Entities;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Eventy.DAL.Context
+{
+    public class ApplicationDbContext : DbContext
+    {
+        public ApplicationDbContext(DbContextOptions options) : base(options)
+        {
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        }
+
+        public DbSet&lt;EventCategory&gt; eventCategories { get; set; }
+        
+    }
+}
+
+    </code></pre>
+      </div>
+    </div>
+
+    <h1>الحين نروح داخل 📁 Configuration</h1>
+    <div class="step">
+      <p>نضيف كلاس جديد وسمّيناه</p>
+      <h2><span class="folder">📄 EventCategory</span></h2>
+      <p>
+        هنا نضع ملفات إعداد منفصلة لكل كلاس باستخدام
+        <strong>Fluent API</strong> لتحديد التفاصيل بدقة:
+      </p>
+      <ul>
+        <li>اسم الجدول والأعمدة.</li>
+        <li>الطول ونوع البيانات.</li>
+        <li>المتطلبات مثل <code>IsRequired</code>.</li>
+        <li>المفاتيح الأساسية والعلاقات.</li>
+      </ul>
+      <div class="note">
+        ✅ بهذا الشكل نكون نظّمنا طبقة (DAL) بطريقة احترافية، حيث كل شيء في
+        مكانه المناسب 💼.
+      </div>
+    </div>
+
+    <div class="back-button">
+      <button onclick="location.href='#'" style="margin-right: 15px">
+        التالي
+      </button>
+
+      <button onclick="location.href='../index.html'">
+        الرجوع إلى الصفحة الرئيسية
+      </button>
+
+      <button onclick="history.back()">العودة للصفحة السابقة</button>
+    </div>
+
+    <!-- خلفية البوب أب -->
+    <div id="overlay"></div>
+
+    <!-- Overlay -->
+    <div id="overlay"></div>
+
+    <!-- Popups -->
+    <div class="popup" id="popup1">
+      <button class="closeBtn">× إغلاق</button>
+      <h2>اختصارات EventCategory</h2>
+      <div class="shortcut">
+        <h3>إضافة خاصية جديدة</h3>
+        <img src="/assets/imgs/gif/addEntity.gif" />
+      </div>
+    </div>
+
+    <div class="popup" id="popup2">
+      <button class="closeBtn">× إغلاق</button>
+      <h2>اختصارات ApplicationDbContext</h2>
+      <div class="shortcut">
+        <h3>استخدام DbContext</h3>
+        <ul>
+          <li>استخدمنا الوراثة من <code>DbContext</code></li>
+        </ul>
+        <img src="/assets/imgs/gif/DbContext.gif" />
+      </div>
+      <div class="shortcut">
+        <h3>استخدام OnConfiguring</h3>
+        <ul>
+          <li>
+            هذي نستخدمها إذا نريد يستقبل إعدادات الاتصال بقاعدة البيانات (SQL
+            Server)
+          </li>
+          <p style="direction: ltr">
+            optionsBuilder.UseSqlServer("ConnectionString");
+          </p>
+          <img src="/assets/imgs/gif/OnConfiguring.gif" />
+          <li>
+            بس بما إننا نشتغل باستخدام appsettings.json ونسوي الإعداد من مشروع
+            الـMVC، غالبًا ما نحتاج نكتب شي هنا.
+          </li>
+        </ul>
+      </div>
+
+      <div class="shortcut">
+        <h3>استخدام OnModelCreating</h3>
+        <img src="/assets/imgs/gif/OnModelCreating.gif" />
+        <ul>
+          <li>
+            هنا نقول لـ EF Core إنه يروح يدور في المشروع على كل ملفات التهيئة
+            <strong>(Configurations)</strong> ويطبقها تلقائيًا.
+          </li>
+          <img src="/assets/imgs/gif/ApplyConfigurationsFromAssembly.gif" />
+          <li>
+            ApplyConfigurationsFromAssembly تسهّل الربط وما نحتاج نربط كل كيان
+            يدوي.
+          </li>
+        </ul>
+      </div>
+
+      <div class="shortcut">
+        <h3>استخدام DbSet</h3>
+        <img src="/assets/imgs/pics/Picture1.png" />
+        <ul>
+          <li>
+            هذا السطر يربط كيان <strong>EventCategory</strong> بجدول في قاعدة
+            البيانات.
+          </li>
+          <li>
+            <strong>DbSet</strong> هو اللي يخلي EF Core يعرف إنه في جدول اسمه
+            eventCategories ويقدر يضيف ويقرأ ويحدث ويحذف منه.
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <script>
+      function copyCode(button) {
+        const codeElement = button.parentElement.querySelector("code");
+        const code = codeElement.textContent;
+
+        navigator.clipboard
+          .writeText(code)
+          .then(() => {
+            button.innerText = "تم النسخ ✅";
+            setTimeout(() => {
+              button.innerText = "نسخ الكود";
+            }, 2000);
+          })
+          .catch((err) => {
+            console.error("فشل النسخ:", err);
+            button.innerText = "حدث خطأ ❌";
+          });
+      }
+    </script>
+
+    <!-- Scripts -->
+    <script>
+      function copyCode(button) {
+        const codeElement = button.parentElement.querySelector("code");
+        const code = codeElement.textContent;
+        navigator.clipboard.writeText(code).then(() => {
+          button.innerText = "تم النسخ ✅";
+          setTimeout(() => {
+            button.innerText = "نسخ الكود";
+          }, 2000);
+        });
+      }
+
+      const overlay = document.getElementById("overlay");
+      const buttons = document.querySelectorAll(".shortcut-button");
+      const popups = document.querySelectorAll(".popup");
+      const closeButtons = document.querySelectorAll(".closeBtn");
+
+      buttons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const popupId = btn.getAttribute("data-popup-id");
+          const popup = document.getElementById(popupId);
+          popups.forEach((p) => (p.style.display = "none"));
+          popup.style.display = "block";
+          overlay.style.display = "block";
+          document.body.style.overflow = "hidden";
+        });
+      });
+
+      closeButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          btn.parentElement.style.display = "none";
+          overlay.style.display = "none";
+          document.body.style.overflow = "auto";
+        });
+      });
+
+      overlay.addEventListener("click", () => {
+        popups.forEach((p) => (p.style.display = "none"));
+        overlay.style.display = "none";
+        document.body.style.overflow = "auto";
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          popups.forEach((p) => (p.style.display = "none"));
+          overlay.style.display = "none";
+          document.body.style.overflow = "auto";
+        }
+      });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/prism.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-csharp.min.js"></script>
+  </body>
+</html>

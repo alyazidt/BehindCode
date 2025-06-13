@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>بدء العمل على Data Access Layer</title>
+    <title>تنظيم طبقة البيانات (DAL)</title>
     <style>
       body {
         font-family: "Segoe UI", sans-serif;
@@ -35,14 +35,13 @@
         margin-bottom: 10px;
       }
 
-      code {
-        background-color: #e0f2f1;
-        padding: 3px 8px;
-        border-radius: 5px;
-        font-size: 0.95rem;
-        direction: ltr;
+      .folder {
+        background-color: #e0f7fa;
+        padding: 10px 15px;
+        border-radius: 8px;
+        font-weight: bold;
         display: inline-block;
-        margin: 5px 0;
+        margin-bottom: 10px;
       }
 
       .note {
@@ -51,6 +50,14 @@
         padding: 15px;
         border-radius: 10px;
         margin-top: 20px;
+      }
+
+      ul {
+        padding-right: 20px;
+      }
+
+      li {
+        margin-bottom: 8px;
       }
 
       .nav-buttons {
@@ -119,53 +126,59 @@
     </style>
   </head>
   <body>
-    <h1>نبدأ في طبقة (Data Access Layer)</h1>
+    <h1>تنظيم ملفات طبقة (DAL)</h1>
 
     <div class="step">
-      <h2>ليش نبدأ بـ DAL؟</h2>
-      <p>لأن هذه الطبقة تمثل الأساس للتعامل مع قاعدة البيانات. وظيفتها:</p>
+      <h2><span class="folder">📁 Entities</span></h2>
+      <p>
+        بعد تركيب الباكيجات وتجهيز مشروع <strong>Data Access Layer</strong>،
+        نبدأ بإنشاء الكلاسات التي تمثل الجداول في قاعدة البيانات.
+      </p>
+      <p>
+        لكن بدلاً من استخدام اسم <code>Models</code> (لأنه موجود أصلًا في مشروع
+        MVC)، نستخدم الاسم <strong>Entities</strong> لتجنب التعارض بين الكلاسات
+        في الطبقات المختلفة.
+      </p>
+      <div class="note">
+        ⚠️ السبب: تجنب تعارض الأسماء بين كلاس في DAL وآخر بنفس الاسم في
+        Presentation Layer.
+      </div>
+    </div>
+
+    <div class="step">
+      <h2><span class="folder">📁 Context</span></h2>
+      <p>
+        في هذا المجلد، نُنشئ ملف <strong>AppDbContext</strong> وهو الملف الرئيسي
+        للتعامل مع قاعدة البيانات، ويقوم بـ:
+      </p>
       <ul>
-        <li>إرسال واسترجاع البيانات من وإلى قاعدة البيانات.</li>
-        <li>تنظيم الاتصال بالبيانات بشكل آمن واحترافي.</li>
+        <li>تعريف الجداول باستخدام <code>DbSet</code>.</li>
+        <li>تنظيم العلاقات بين الكيانات.</li>
+        <li>تطبيق إعدادات التهيئة (Configuration). (اللي بنسويها بعد شوي)</li>
       </ul>
     </div>
 
     <div class="step">
-      <h2>١. تثبيت الحزم (Packages) في DAL</h2>
-      <p>نفتح مدير الحزم (NuGet) ونثبت الـPackages التالية في مشروع DAL:</p>
-      <code>Microsoft.EntityFrameworkCore</code><br />
-      <img
-        src="../assets/imgs/gif/Microsoft.EntityFrameworkCore.gif"
-        style="max-width: 100%; border-radius: 15px"
-      />
-      <code>Microsoft.EntityFrameworkCore.SqlServer</code>
-      <img
-        src="../assets/imgs/gif/Microsoft.EntityFrameworkCore.SqlServer.gif"
-        style="max-width: 100%; border-radius: 15px"
-      />
-    </div>
-
-    <div class="step">
-      <h2>٢. تثبيت أدوات التهيئة (Migration Tools)</h2>
+      <h2><span class="folder">📁 Configuration</span></h2>
       <p>
-        نحتاج نثبت الـPackage التالية في مشروع
-        <strong>Presentation Layer (MVC)</strong>:
+        هنا نضع ملفات إعداد منفصلة لكل كلاس باستخدام
+        <strong>Fluent API</strong> لتحديد التفاصيل بدقة:
       </p>
-      <code>Microsoft.EntityFrameworkCore.Tools</code>
-      <img
-        src="../assets/imgs/gif/Microsoft.EntityFrameworkCore.Tools.gif"
-        style="max-width: 100%; border-radius: 15px"
-      />
-
+      <ul>
+        <li>اسم الجدول والأعمدة.</li>
+        <li>الطول ونوع البيانات.</li>
+        <li>المتطلبات مثل <code>IsRequired</code>.</li>
+        <li>المفاتيح الأساسية والعلاقات.</li>
+      </ul>
       <div class="note">
-        📌 ملاحظة: هذا مهم عشان نقدر نستخدم الأوامر <code>Add-Migration</code> و
-        <code>Update-Database</code> في الـ Package Manager Console.
+        ✅ بهذا الشكل نكون نظّمنا طبقة (DAL) بطريقة احترافية، حيث كل شيء في
+        مكانه المناسب 💼.
       </div>
     </div>
 
     <div class="back-button">
       <button
-        onclick="location.href='../parts of 3-Tier Architecture/dal structure/dal-structure.html'"
+        onclick="location.href='../dal structure/Entities.html'"
         style="margin-right: 15px"
       >
         التالي
