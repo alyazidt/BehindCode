@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>مفاهيم OOP الأربعة</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #f4f4f4;
+        color: #333;
+        padding: 30px;
+        line-height: 1.8;
+      }
+      .container {
+        max-width: 800px;
+        margin: auto;
+        background: white;
+        padding: 20px 30px;
+        border-radius: 16px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        text-align: center;
+        color: #007b83;
+      }
+      .concept {
+        margin-bottom: 30px;
+      }
+      .concept h2 {
+        color: #007b83;
+        margin-bottom: 10px;
+      }
+      .keyword {
+        font-weight: bold;
+        color: #d35400;
+      }
+      .example {
+        background-color: #eef9fa;
+        padding: 10px;
+        border-radius: 8px;
+        margin-top: 10px;
+        border-right: 4px solid #007b83;
+      }
+
+      .back-button {
+        display: block;
+        margin: 40px auto 0;
+        text-align: center;
+      }
+
+      .back-button button {
+        background-color: #00796b;
+        color: white;
+        padding: 14px 28px;
+        font-size: 1.1rem;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+      }
+
+      .back-button button:hover {
+        background-color: #004d40;
+      }
+
+      .back-button {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin: 40px auto 0;
+      }
+
+      .back-button button {
+        background-color: #00796b;
+        color: white;
+        padding: 14px 28px;
+        font-size: 1.1rem;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .back-button button:hover {
+        background-color: #004d40;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>المفاهيم الأربعة للـ (OOP)</h1>
+
+      <div class="concept">
+        <h2>١. <span class="keyword">Encapsulation – التغليف</span></h2>
+        <p>
+          يعني نخلي <strong>Properties</strong> و <strong>Methods</strong> في
+          class واحد، ونحميها من التلاعب الخارجي. مثلاً، ما نخلي كل شي
+          <code>public</code> نتحكم في الوصول لها باستخدام
+          <code>private</code> و <code>get/set</code>.
+        </p>
+        <div class="example">
+          الهدف؟ نحافظ على أمان البيانات، ونخلي التحكم فيها من داخل الكلاس نفسه
+          فقط.
+        </div>
+      </div>
+
+      <div class="concept">
+        <h2>٢. <span class="keyword">Inheritance – الوراثة</span></h2>
+        <p>
+          معناها إن كلاس جديد (الولد) يقدر يستفيد من كلاس ثاني (الأبو) ويأخذ منه
+          <strong>Properties</strong> و <strong>Methods</strong> بدون ما نعيد
+          كتابتها.
+        </p>
+        <div class="example">
+          مثلًا: عندنا كلاس اسمه <code>Person</code> فيه <code>Name</code> و
+          <code>Age</code>، نقدر نعمل كلاس ثاني <code>Student</code> وبيكون عنده
+          نفس الخصائص، ونقدر نضيف عليه خصائص زيادة خاصة فيه مثل
+          <code>Grade</code> و <code>SchoolName</code>.
+        </div>
+        <div class="example">
+          يعني تخيل كأنك ورثت من أبوك بعض الصفات: الشكل، الاسم العائلي، وأسلوب
+          الحياة. لكن بعدين تضيف أشياء خاصة فيك: هواياتك، تخصصك، طموحك. نفس الشي
+          فـ البرمجة، الكلاس الولد يرث ويضيف.
+        </div>
+      </div>
+
+      <div class="concept">
+        <h2>٣. <span class="keyword">Polymorphism – تعدد الأشكال</span></h2>
+        <p>
+          يعني إن نفس الدالة أو الوظيفة ممكن تشتغل بأكثر من طريقة مختلفة حسب نوع
+          الكلاس أو السياق اللي استُخدمت فيه.
+        </p>
+        <div class="example">
+          كأنك تقول لكل شخص فالعائلة "اطبع لي شيء" فكل شخص يطبع شي يخصه: الأب
+          يطبع تقرير الشغل، الأم تطبع قائمة التسوق، والولد يطبع واجباته.
+        </div>
+      </div>
+
+      <div class="concept">
+        <h2>٤. <span class="keyword">Abstraction – التجريد</span></h2>
+        <p>
+          التجريد يعني نركّز على <strong>وش يسوي الكائن</strong> أو
+          <strong>الوظيفة</strong> بدون ما نغوص في تفاصيل كيف تشتغل بالداخل.
+        </p>
+        <div class="example">
+          يعني؟ نفصّل الأشياء المهمة واللي يحتاجها المستخدم أو المطور، ونخفي
+          التفاصيل المعقدة أو اللي مالها داعي يطلع لها أحد.
+        </div>
+      </div>
+    </div>
+
+    <div class="back-button">
+      <button onclick="location.href='/index.html'">
+        الرجوع إلى الصفحة الرئيسية
+      </button>
+    </div>
+  </body>
+</html>

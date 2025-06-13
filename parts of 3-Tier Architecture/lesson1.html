@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3-Tier Architecture</title>
+    <style>
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: linear-gradient(to bottom, #e0f7fa, #ffffff);
+        margin: 0;
+        padding: 0;
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        color: #00796b;
+        margin-top: 30px;
+      }
+
+      .layer-container {
+        display: flex;
+        justify-content: space-around;
+        margin: 50px;
+        flex-wrap: wrap;
+      }
+
+      .layer {
+        background: #ffffff;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        border-radius: 20px;
+        padding: 20px;
+        width: 280px;
+        cursor: pointer;
+        transition: transform 0.3s;
+      }
+
+      .layer:hover {
+        transform: scale(1.05);
+      }
+
+      .layer img {
+        width: 100px;
+        margin-bottom: 15px;
+      }
+
+      .layer h2 {
+        color: #00695c;
+        margin-bottom: 10px;
+      }
+
+      .description {
+        display: none;
+        text-align: justify;
+        font-size: 1rem;
+        color: #444;
+        margin-top: 10px;
+      }
+
+      audio {
+        display: none;
+      }
+
+      .footer {
+        margin-top: 40px;
+        font-size: 0.9rem;
+        color: #999;
+      }
+
+      .back-button {
+        display: block;
+        margin: 40px auto 0;
+        text-align: center;
+      }
+
+      .back-button button {
+        background-color: #00796b;
+        color: white;
+        padding: 14px 28px;
+        font-size: 1.1rem;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+      }
+
+      .back-button button:hover {
+        background-color: #004d40;
+      }
+
+      .back-button {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin: 40px auto 0;
+      }
+
+      .back-button button {
+        background-color: #00796b;
+        color: white;
+        padding: 14px 28px;
+        font-size: 1.1rem;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .back-button button:hover {
+        background-color: #004d40;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>3-Tier Architecture</h1>
+    <h4 dir="rtl">
+      هي طريقة تقسيم التطبيق لثلاث طبقات واضحة ومنظمة.<br />
+      الفكرة إنك تفصل هالطبقات عن بعض، عشان تصير كل وحدة تشتغل لحالها، وهذا يسهل
+      الصيانة والتطوير ويخلي التطبيق مرتب وواضح.
+    </h4>
+    <div class="layer-container">
+      <div class="layer" onclick="toggleLayer('presentation')">
+        <img
+          src="https://img.icons8.com/dusk/64/web.png"
+          alt="Presentation Layer"
+        />
+        <h2>Presentation Layer</h2>
+        <p class="description" id="desc-presentation" dir="rtl">
+          هذي اللي تشوفها وتتفاعل معها، يعني صفحات الموقع أو التطبيق اللي
+          يستخدمها المستخدم. هي اللي تعرض البيانات وتاخذ منك الإدخال.
+        </p>
+      </div>
+
+      <div class="layer" onclick="toggleLayer('business')">
+        <img
+          src="https://img.icons8.com/dusk/64/workflow.png"
+          alt="Business Layer"
+        />
+        <h2>Business Logic Layer</h2>
+        <p class="description" id="desc-business" dir="rtl">
+          هذي عقل التطبيق، المكان اللي فيه كل القوانين والعمليات اللي تحدد كيف
+          يتعامل التطبيق مع البيانات، مثل الحسابات والتحققات.
+        </p>
+      </div>
+
+      <div class="layer" onclick="toggleLayer('data')">
+        <img
+          src="https://img.icons8.com/dusk/64/database.png"
+          alt="Data Layer"
+        />
+        <h2>Data Access Layer</h2>
+        <p class="description" id="desc-data" dir="rtl">
+          هذي الطبقة اللي تتواصل مع قاعدة البيانات، تجيب البيانات أو تخزنها
+          بطريقة مرتبة وآمنة.
+        </p>
+      </div>
+    </div>
+
+    <hr style="margin: 60px 0; border: none; border-top: 2px dashed #ccc" />
+
+    <div
+      style="
+        background: #fff;
+        padding: 30px;
+        margin: 20px auto;
+        border-radius: 20px;
+        width: 80%;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        direction: rtl;
+        text-align: right;
+      "
+    >
+      <label for="usernameInput"
+        ><strong dir="rtl">اسم المستخدم:</strong></label
+      >
+      <input
+        dir="rtl"
+        type="text"
+        id="usernameInput"
+        placeholder="اكتب اسمك"
+        style="padding: 10px; width: 60%; margin: 10px 0"
+      />
+      <button
+        onclick="handleRegisterClick()"
+        dir="rtl"
+        style="
+          padding: 10px 20px;
+          background: #00796b;
+          color: white;
+          border: none;
+          border-radius: 8px;
+        "
+      >
+        سجل اسمي
+      </button>
+
+      <p id="error" style="color: red; margin-top: 10px"></p>
+      <p id="result" style="color: green"></p>
+    </div>
+
+    <div
+      style="
+        background: #f0f4f8;
+        padding: 30px;
+        margin: 20px auto;
+        border-radius: 20px;
+        width: 80%;
+        direction: rtl;
+        text-align: right;
+        font-size: 1.2rem;
+        color: #333;
+        line-height: 2;
+        font-family: 'Segoe UI', Tahoma, 'Amiri', sans-serif;
+      "
+    >
+      <h2 style="color: #00796b">مثال بسيط سريع</h2>
+
+      <ul style="list-style-type: '✅ '; padding-right: 20px">
+        <li>
+          <strong>(Presentation Layer):</strong>
+          هنا المستخدم يشوف صفحة فيها خانة يكتب فيها اسمه، وبعدين يضغط زر "سجل
+          اسمي". هذي هي الواجهة اللي يتعامل معها.
+        </li>
+        <br />
+        <li>
+          <strong>(Business Logic Layer):</strong>
+          لما المستخدم يضغط "سجل اسمي"، تدخل هذي الطبقة تراجع الاسم اللي كتبه.
+          إذا الاسم فاضي، تخبر المستخدم إنه لازم يكتب اسم صحيح. وإذا كان مضبوط،
+          تمرر الاسم للطبقة اللي بعدها.
+        </li>
+        <br />
+        <li>
+          <strong>(Data Access Layer):</strong>
+          هذي الطبقة تستلم الاسم من الطبقة السابقة، وتتأكد من تخزينه في قاعدة
+          البيانات بشكل مرتب وآمن. بعدين ترجع تأكيد أن الاسم تم حفظه.
+        </li>
+      </ul>
+
+      <p>
+        <strong>وبهذه الطريقة، كل طبقة تؤدي دورها بشكل منفصل ومنظم:</strong>
+      </p>
+      <ul style="list-style-type: '🧩 '; padding-right: 20px">
+        <li>
+          <strong>Presentation:</strong> تعرض المعلومات وتاخذ الإدخال من
+          المستخدم.
+        </li>
+        <li>
+          <strong>Business Logic:</strong> تتحقق من صحة البيانات وتطبق القوانين
+          المنطقية.
+        </li>
+        <li>
+          <strong>Data Access:</strong> تتعامل مع تخزين واسترجاع البيانات من
+          قاعدة البيانات.
+        </li>
+      </ul>
+    </div>
+
+    <div style="text-align: center; margin: 40px 0">
+      <button
+        onclick="location.href='/parts of 3-Tier Architecture/programm.html'"
+        style="
+          background-color: #00796b;
+          color: white;
+          border: none;
+          padding: 15px 30px;
+          font-size: 1.1rem;
+          border-radius: 30px;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+        "
+      >
+        خلونا نروح للبرمجة 👨‍💻
+      </button>
+    </div>
+
+    <script>
+      function toggleLayer(layerId) {
+        // إخفاء جميع الوصف
+        document
+          .querySelectorAll(".description")
+          .forEach((desc) => (desc.style.display = "none"));
+
+        // تشغيل الصوت
+        document.querySelectorAll("audio").forEach((audio) => audio.pause());
+        const audio = document.getElementById("audio-" + layerId);
+        if (audio) {
+          audio.currentTime = 0;
+          audio.play();
+        }
+
+        // عرض الوصف المختار
+        const desc = document.getElementById("desc-" + layerId);
+        if (desc) {
+          desc.style.display = "block";
+        }
+      }
+    </script>
+    <script>
+      // Data Access Layer
+      const Database = {
+        usernames: [],
+        saveUsername(name) {
+          this.usernames.push(name);
+          console.log("تم الحفظ:", this.usernames);
+        },
+      };
+
+      // Business Logic Layer
+      const Logic = {
+        validateUsername(name) {
+          return name.trim() !== "";
+        },
+        registerUsername(name) {
+          if (!this.validateUsername(name)) {
+            return { success: false, message: "⚠️ الرجاء إدخال اسم صحيح" };
+          }
+
+          Database.saveUsername(name);
+          return { success: true, message: `✅ تم تسجيل الاسم: ${name}` };
+        },
+      };
+
+      // Presentation Layer
+      function handleRegisterClick() {
+        const input = document.getElementById("usernameInput").value;
+        const errorEl = document.getElementById("error");
+        const resultEl = document.getElementById("result");
+
+        const result = Logic.registerUsername(input);
+
+        if (result.success) {
+          errorEl.textContent = "";
+          resultEl.textContent = result.message;
+        } else {
+          resultEl.textContent = "";
+          errorEl.textContent = result.message;
+        }
+      }
+    </script>
+  </body>
+</html>
