@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>تنظيم طبقة البيانات (DAL)</title>
+    <title>appsettings.json</title>
     <style>
       body {
         font-family: "Segoe UI", sans-serif;
@@ -259,6 +259,14 @@
         font-weight: bold;
         color: #00695c;
       }
+
+      .note {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #e9f5ff;
+        border: 1px solid #cce5ff;
+        border-radius: 10px;
+      }
     </style>
     <!-- Prism.js CSS theme (يشبه VS Code) -->
     <link
@@ -267,14 +275,11 @@
     />
   </head>
   <body>
-    <h1>الحين نكمل شغلنا داخل 📁 Entities</h1>
-
     <div class="step">
-      <p>نضيف كلاس جديد وسمّيناه</p>
-      <h2><span class="folder">📄 EventCategory</span></h2>
-
+      <h2><span class="folder">📄 appsettings.json</span></h2>
+      <p>الحين في ملف <strong>appsettings.json</strong> نضيف هذا الجزء:</p>
       <img
-        src="../assets/imgs/gif/EventCategory.gif"
+        src="../assets/imgs/gif/appsettings.gif"
         style="max-width: 100%; border-radius: 15px"
       />
 
@@ -284,142 +289,27 @@
           اضغط هنا للاختصارات
         </button>
         <br />
-
-        <pre><code class="language-csharp">
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Eventy.DAL.Entities
-{
-    public class EventCategory
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-    }
-}
-    </code></pre>
-      </div>
-    </div>
-
-    <h1>الحين نروح داخل 📁 Context</h1>
-
-    <div class="step">
-      <p>
-        الحين، نبدأ نجهّز العقل المدبّر لطبقة البيانات، واللي هو كلاس
-        <strong>ApplicationDbContext</strong> هذا الكلاس هو اللي يتواصل مباشرة
-        مع قاعدة البيانات، ويعرّف الجداول ويربط بينها.
-      </p>
-      <h2><span class="folder">📄 ApplicationDbContext</span></h2>
-      <img
-        src="../assets/imgs/gif/ApplicationDbContext.gif"
-        style="max-width: 100%; border-radius: 15px"
-      />
-
-      <div class="code-container">
-        <button class="copy-button" onclick="copyCode(this)">نسخ الكود</button>
-        <button class="shortcut-button" data-popup-id="popup2">
-          اضغط هنا للاختصارات
-        </button>
-
-        <br />
-
         <pre><code class="language-csharp">
 using Eventy.DAL.Entities;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Eventy.DAL.Context
 {
-    public class ApplicationDbContext : DbContext
-    {
-        public ApplicationDbContext(DbContextOptions options) : base(options)
-        {
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(optionsBuilder);
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-        }
-
-        public DbSet&lt;EventCategory&gt; eventCategories { get; set; }
-        
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
     }
+  },
+  "AllowedHosts": "*",
+  "ConnectionStrings": {
+    "Connection": "Data Source=.;Database=Eventom;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False"
+  }
 }
 
-    </code></pre>
-      </div>
-    </div>
-
-    <h1>الحين نروح داخل 📁 Configuration</h1>
-    <div class="step">
-      <p>نضيف كلاس جديد ونسميه</p>
-      <h2><span class="folder">📄 EventCategoryConfiguration</span></h2>
-
-      <img
-        src="../assets/imgs/gif/EventCategoryConfiguration.gif"
-        style="max-width: 100%; border-radius: 15px"
-      />
-      <p>
-        الكود التالي يستخدم <strong>Fluent API</strong> وظيفته يضبط إعدادات كلاس
-        <code>EventCategory</code> يعني يحدد كيف تكون خصائصه داخل قاعدة
-        البيانات.
-      </p>
-
-      <div class="code-container">
-        <button class="copy-button" onclick="copyCode(this)">نسخ الكود</button>
-        <button class="shortcut-button" data-popup-id="popup3">
-          اضغط هنا للاختصارات
-        </button>
-
-        <br />
-
-        <pre><code class="language-csharp">
-using Eventy.DAL.Entities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Eventy.DAL.Configuration
-{
-    public class EventCategoryConfiguration : IEntityTypeConfiguration&lt;EventCategory&gt;
-    {
-        public void Configure(EntityTypeBuilder&lt;EventCategory&gt; builder) 
-        {
-            builder.Property(e => e.Name)
-                .IsRequired()
-                .HasMaxLength(90);
-        }
-    }
-}
     </code></pre>
       </div>
     </div>
 
     <div class="back-button">
-      <button
-        onclick="location.href='../parts of 3-Tier Architecture/appsettings.html'"
-        style="margin-right: 15px"
-      >
+      <button onclick="location.href='#'" style="margin-right: 15px">
         التالي
       </button>
 
@@ -437,114 +327,39 @@ namespace Eventy.DAL.Configuration
     <div id="overlay"></div>
 
     <!-- Popups -->
+
     <div class="popup" id="popup1">
       <button class="closeBtn">× إغلاق</button>
-      <h2>اختصارات EventCategory</h2>
-      <div class="shortcut">
-        <h3>إضافة خاصية جديدة</h3>
-        <img src="../assets/imgs/gif/addEntity.gif" />
-      </div>
-    </div>
-
-    <div class="popup" id="popup2">
-      <button class="closeBtn">× إغلاق</button>
-      <h2>اختصارات ApplicationDbContext</h2>
-      <div class="shortcut">
-        <h3>استخدام DbContext</h3>
+      <div class="note">
+        <h3>📝 شرح كل جزء:</h3>
         <ul>
-          <li>استخدمنا الوراثة من <code>DbContext</code></li>
+          <li>
+            <strong>Data Source=.</strong> تعني أن قاعدة البيانات على نفس
+            الجهاز.
+          </li>
+          <li><strong>Database=Event</strong> اسم قاعدة البيانات.</li>
+          <li>
+            <strong>Integrated Security=True</strong> يستخدم بيانات دخول
+            الويندوز بدون اسم مستخدم وكلمة سر.
+          </li>
+          <li>
+            <strong>Connect Timeout=30</strong> يمهل التطبيق ٣٠ ثانية للاتصال
+            قبل أن يفشل.
+          </li>
+          <li><strong>Encrypt=True</strong> يفعّل التشفير لحماية الاتصال.</li>
+          <li>
+            <strong>TrustServerCertificate=True</strong> يقبل الشهادات حتى لو
+            غير موقعة رسميًا.
+          </li>
+          <li>
+            <strong>ApplicationIntent=ReadWrite</strong> يسمح بالقراءة والكتابة
+            على القاعدة.
+          </li>
+          <li>
+            <strong>MultiSubnetFailover=False</strong> لا يستخدم التبديل بين
+            الشبكات (يُستخدم في بيئات متقدمة).
+          </li>
         </ul>
-        <div class="keyboard-shortcuts">
-          <div class="key-combo">
-            <span class="key">Ctrl</span>
-            <p>+</p>
-            <span class="key">.</span>
-            <span class="shortcut-label">عشان تطلع لك القائمة</span>
-          </div>
-          <img src="../assets/imgs/gif/DbContext.gif" />
-        </div>
-        <div class="shortcut">
-          <h3>استخدام OnConfiguring</h3>
-          <ul>
-            <li>
-              هذي نستخدمها إذا نريد يستقبل إعدادات الاتصال بقاعدة البيانات (SQL
-              Server)
-            </li>
-            <p style="direction: ltr">
-              optionsBuilder.UseSqlServer("ConnectionString");
-            </p>
-            <img src="../assets/imgs/gif/OnConfiguring.gif" />
-            <li>
-              بس بما إننا نشتغل باستخدام appsettings.json ونسوي الإعداد من مشروع
-              الـMVC، غالبًا ما نحتاج نكتب شي هنا.
-            </li>
-          </ul>
-        </div>
-
-        <div class="shortcut">
-          <h3>استخدام OnModelCreating</h3>
-          <img src="../assets/imgs/gif/OnModelCreating.gif" />
-          <ul>
-            <li>
-              هنا نقول لـ EF Core إنه يروح يدور في المشروع على كل ملفات التهيئة
-              <strong>(Configurations)</strong> ويطبقها تلقائيًا.
-            </li>
-            <img src="../assets/imgs/gif/ApplyConfigurationsFromAssembly.gif" />
-            <li>
-              ApplyConfigurationsFromAssembly تسهّل الربط وما نحتاج نربط كل كيان
-              يدوي.
-            </li>
-          </ul>
-        </div>
-
-        <div class="shortcut">
-          <h3>استخدام DbSet</h3>
-          <img src="../assets/imgs/pics/Picture1.png" />
-          <ul>
-            <li>
-              هذا السطر يربط كيان <strong>EventCategory</strong> بجدول في قاعدة
-              البيانات.
-            </li>
-            <li>
-              <strong>DbSet</strong> هو اللي يخلي EF Core يعرف إنه في جدول اسمه
-              eventCategories ويقدر يضيف ويقرأ ويحدث ويحذف منه.
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="popup" id="popup3">
-      <button class="closeBtn">× إغلاق</button>
-      <h2>اختصارات EventCategoryConfiguration</h2>
-      <div class="shortcut">
-        <h3>استخدام IEntityTypeConfiguration</h3>
-        <ul>
-          <li><code>Implemnt interface</code></li>
-        </ul>
-        <div class="keyboard-shortcuts">
-          <div class="key-combo">
-            <span class="key">Ctrl</span>
-            <p>+</p>
-            <span class="key">.</span>
-            <span class="shortcut-label">عشان تطلع لك القائمة</span>
-          </div>
-          <img src="../assets/imgs/gif/IEntityTypeConfiguration.gif" />
-        </div>
-        <div class="shortcut">
-          <h3>تخصيص الجدول</h3>
-          <img src="../assets/imgs/pics/Picture2.png" />
-          <div class="note">
-            <p>
-              <strong>📌 IsRequired( ):</strong> هذا يعني أن الحقل
-              <code>Name</code> لا يمكن أن يكون فارغًا. يجب إدخال قيمة.
-            </p>
-            <p>
-              <strong>📌 HasMaxLength(90):</strong> يحدد أن الحد الأقصى لطول
-              النص في الحقل هو <strong>٩٠ حرف</strong> فقط.
-            </p>
-          </div>
-        </div>
       </div>
     </div>
 
