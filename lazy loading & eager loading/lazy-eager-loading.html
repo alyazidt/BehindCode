@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lazy Loading و Eager Loading في ASP.NET</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        color: #333;
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .header {
+        text-align: center;
+        color: white;
+        margin-bottom: 40px;
+        padding: 40px 0;
+      }
+
+      .header h1 {
+        font-size: 3rem;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .header .subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+      }
+
+      .content-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-bottom: 40px;
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+      }
+
+      .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+      }
+
+      .card h2 {
+        font-size: 2rem;
+        margin-bottom: 20px;
+        color: #4a5568;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .icon {
+        font-size: 2.5rem;
+      }
+
+      .definition {
+        background: #f7fafc;
+        padding: 20px;
+        border-radius: 15px;
+        margin: 20px 0;
+        border-right: 4px solid #667eea;
+      }
+
+      .code-container {
+        background: #1a202c;
+        border-radius: 15px;
+        padding: 20px;
+        margin: 20px 0;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .code-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        color: #a0aec0;
+        font-size: 0.9rem;
+      }
+
+      .code-dots {
+        display: flex;
+        gap: 5px;
+      }
+
+      .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+
+      .dot.red {
+        background: #ff5f56;
+      }
+      .dot.yellow {
+        background: #ffbd2e;
+      }
+      .dot.green {
+        background: #27ca3f;
+      }
+
+      pre {
+        color: #e2e8f0;
+        font-family: "Courier New", monospace;
+        font-size: 0.9rem;
+        overflow-x: auto;
+        white-space: pre-wrap;
+      }
+
+      .keyword {
+        color: #c678dd;
+      }
+      .string {
+        color: #98c379;
+      }
+      .comment {
+        color: #5c6370;
+        font-style: italic;
+      }
+      .method {
+        color: #61afef;
+      }
+      .property {
+        color: #e06c75;
+      }
+
+      .benefits {
+        background: #edf2f7;
+        border-radius: 15px;
+        padding: 20px;
+        margin: 20px 0;
+      }
+
+      .benefits h3 {
+        color: #2d3748;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .benefits ul {
+        list-style: none;
+        padding-right: 20px;
+      }
+
+      .benefits li {
+        margin: 10px 0;
+        padding-right: 20px;
+        position: relative;
+      }
+
+      .benefits li::before {
+        content: "✅";
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+
+      .comparison-table {
+        grid-column: 1 / -1;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        overflow: hidden;
+      }
+
+      .comparison-table::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #f093fb, #f5576c);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      th,
+      td {
+        padding: 15px;
+        text-align: center;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      th {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        font-weight: 600;
+      }
+
+      tr:hover {
+        background: #f7fafc;
+        transition: background 0.3s ease;
+      }
+
+      .usage-guide {
+        grid-column: 1 / -1;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .usage-guide::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #4facfe, #00f2fe);
+      }
+
+      .usage-scenarios {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-top: 20px;
+      }
+
+      .scenario {
+        background: #f7fafc;
+        border-radius: 15px;
+        padding: 20px;
+        border-right: 4px solid;
+      }
+
+      .scenario.eager {
+        border-right-color: #667eea;
+      }
+
+      .scenario.lazy {
+        border-right-color: #764ba2;
+      }
+
+      .interactive-demo {
+        grid-column: 1 / -1;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .interactive-demo::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #ff9a9e, #fecfef);
+      }
+
+      .demo-buttons {
+        display: flex;
+        gap: 20px;
+        margin: 20px 0;
+        justify-content: center;
+      }
+
+      .demo-btn {
+        padding: 15px 30px;
+        border: none;
+        border-radius: 50px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .demo-btn.eager {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+      }
+
+      .demo-btn.lazy {
+        background: linear-gradient(135deg, #f093fb, #f5576c);
+        color: white;
+      }
+
+      .demo-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      }
+
+      .demo-result {
+        background: #1a202c;
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+        min-height: 200px;
+        color: #e2e8f0;
+        font-family: "Courier New", monospace;
+        display: none;
+      }
+
+      .demo-result.active {
+        display: block;
+        animation: fadeIn 0.5s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .content-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .header h1 {
+          font-size: 2rem;
+        }
+
+        .usage-scenarios {
+          grid-template-columns: 1fr;
+        }
+
+        .demo-buttons {
+          flex-direction: column;
+          align-items: center;
+        }
+      }
+
+      .footer {
+        text-align: center;
+        color: white;
+        margin-top: 40px;
+        padding: 20px;
+        opacity: 0.8;
+      }
+
+      .back-button {
+        display: block;
+
+        text-align: center;
+        padding-bottom: 50px;
+      }
+
+      .back-button button {
+        background-color: #00796b;
+        color: white;
+        padding: 14px 28px;
+        font-size: 1.1rem;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+      }
+
+      .back-button button:hover {
+        background-color: #004d40;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Lazy Loading & Eager Loading</h1>
+      </div>
+
+      <div class="content-grid">
+        <!-- Eager Loading Card -->
+        <div class="card">
+          <h2><span class="icon">🚀</span> Eager Loading</h2>
+          <div class="definition">
+            <strong>التعريف:</strong><br />
+            هو إنك <strong>تطلب كل البيانات اللي تحتاجها من البداية</strong> في
+            نفس الاستعلام.
+          </div>
+
+          <div class="code-container">
+            <div class="code-header">
+              <span>C# Example</span>
+              <div class="code-dots">
+                <div class="dot red"></div>
+                <div class="dot yellow"></div>
+                <div class="dot green"></div>
+              </div>
+            </div>
+            <pre
+              style="direction: ltr"
+            ><code><span class="keyword">var</span> students = context.<span class="property">Students</span>
+    .<span class="method">Include</span>(s => s.<span class="property">Courses</span>)
+    .<span class="method">ToList</span>();
+
+<span class="comment">// هنا نجيب الطلاب ومعاهم المواد الدراسية دفعة وحدة</span></code></pre>
+          </div>
+
+          <div class="benefits">
+            <h3>📌 الفوائد:</h3>
+            <ul>
+              <li>يقلل عدد الاستعلامات على قاعدة البيانات</li>
+              <li>
+                أداء أفضل في الحالات اللي نحتاج فيها البيانات المرتبطة فعلاً
+              </li>
+              <li>تحكم أكبر في البيانات المطلوبة</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Lazy Loading Card -->
+        <div class="card">
+          <h2><span class="icon">🐢</span> Lazy Loading</h2>
+          <div class="definition">
+            <strong>التعريف:</strong><br />
+            هو إنك <strong>ما تجيب البيانات المرتبطة مباشرة</strong>، بل يتم
+            تحميلها <strong>وقت ما تحتاجها فقط</strong>.
+          </div>
+
+          <div class="code-container">
+            <div class="code-header">
+              <span>C# Example</span>
+              <div class="code-dots">
+                <div class="dot red"></div>
+                <div class="dot yellow"></div>
+                <div class="dot green"></div>
+              </div>
+            </div>
+            <pre
+              style="direction: ltr"
+            ><code><span class="keyword">var</span> student = context.<span class="property">Students</span>.<span class="method">First</span>();
+<span class="keyword">var</span> courses = student.<span class="property">Courses</span>; <span class="comment">// يتم جلب البيانات الآن فقط</span>
+
+<span class="keyword">public virtual</span> ICollection&lt;Course&gt; <span class="property">Courses</span> { <span class="keyword">get</span>; <span class="keyword">set</span>; }</code></pre>
+          </div>
+
+          <div class="benefits">
+            <h3>📌 الفوائد:</h3>
+            <ul>
+              <li>يقلل حجم البيانات المحملة بالبداية</li>
+              <li>مفيد إذا كنت مش دايمًا تحتاج العلاقات المرتبطة</li>
+              <li>استهلاك ذاكرة أقل في البداية</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Comparison Table -->
+        <div class="comparison-table">
+          <h2>⚖️ المقارنة بين Eager و Lazy Loading</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>المقارنة</th>
+                <th>Eager Loading</th>
+                <th>Lazy Loading</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>وقت تحميل البيانات</strong></td>
+                <td>فوريًا مع الاستعلام</td>
+                <td>وقت الوصول للخاصية</td>
+              </tr>
+              <tr>
+                <td><strong>الأداء</strong></td>
+                <td>أفضل إذا بتستخدم البيانات المرتبطة مباشرة</td>
+                <td>أفضل إذا مش دايمًا تحتاجها</td>
+              </tr>
+              <tr>
+                <td><strong>الاستخدام</strong></td>
+                <td>عبر <code>Include()</code></td>
+                <td>عبر خصائص <code>virtual</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Usage Guide -->
+        <div class="usage-guide">
+          <h2>🧠 متى أستخدم كل واحد؟</h2>
+          <div class="usage-scenarios">
+            <div class="scenario eager">
+              <h3>🚀 استخدم Eager Loading عندما:</h3>
+              <ul>
+                <li>تحتاج البيانات المرتبطة مباشرة</li>
+                <li>تعرف بالضبط إيش البيانات اللي تحتاجها</li>
+                <li>تبي تقلل عدد الرحلات لقاعدة البيانات</li>
+                <li>البيانات المرتبطة صغيرة الحجم</li>
+              </ul>
+            </div>
+            <div class="scenario lazy">
+              <h3>🐢 استخدم Lazy Loading عندما:</h3>
+              <ul>
+                <li>احتمال تحتاجها لاحقًا فقط</li>
+                <li>البيانات المرتبطة كبيرة الحجم</li>
+                <li>مش متأكد إذا كنت راح تستخدمها أو لا</li>
+                <li>تبي تحسن استهلاك الذاكرة</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="back-button">
+      <button onclick="location.href='../index.html'">
+        الرجوع إلى الصفحة الرئيسية
+      </button>
+    </div>
+
+    <script>
+      // Add some interactive hover effects
+      document.addEventListener("DOMContentLoaded", function () {
+        const cards = document.querySelectorAll(".card");
+
+        cards.forEach((card) => {
+          card.addEventListener("mouseenter", function () {
+            this.style.transform = "translateY(-10px) scale(1.02)";
+          });
+
+          card.addEventListener("mouseleave", function () {
+            this.style.transform = "translateY(0) scale(1)";
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
