@@ -95,17 +95,15 @@
         overflow-x: auto;
       }
 
-      .code-container code {
-        white-space: pre;
-        display: block;
-        font-size: 0.95rem;
+      /* أزرار النسخ والاختصارات بصندوق أفقي */
+      .code-container .button-group {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
       }
 
       .copy-button,
       .shortcut-button {
-        position: flex;
-        top: 10px;
-        left: 10px;
         background-color: #007acc;
         color: white;
         border: none;
@@ -116,29 +114,13 @@
         transition: background-color 0.3s ease;
       }
 
-      .copy-button,
+      .copy-button:hover,
       .shortcut-button:hover {
         background-color: #005a9e;
       }
 
-      .back-button {
-        display: block;
-        margin: 40px auto 0;
-        text-align: center;
-      }
-
-      .back-button button {
-        background-color: #00796b;
-        color: white;
-        padding: 14px 28px;
-        font-size: 1.1rem;
-        border: none;
-        border-radius: 30px;
-        cursor: pointer;
-      }
-
-      .back-button button:hover {
-        background-color: #004d40;
+      .copy-button.copied {
+        background-color: #4caf50 !important;
       }
 
       .back-button {
@@ -283,14 +265,20 @@
         style="max-width: 100%; border-radius: 15px"
       />
 
-      <div class="code-container">
-        <button class="copy-button" onclick="copyCode(this)">نسخ الكود</button>
-        <button class="shortcut-button" data-popup-id="popup1">
-          اضغط هنا للاختصارات
-        </button>
-        <br />
-        <pre><code class="language-csharp">
-using Eventy.DAL.Entities;
+      <div class="code-container" dir="ltr">
+        <div class="button-group">
+          <button
+            class="copy-button"
+            aria-label="نسخ الكود"
+            onclick="copyCode(this)"
+          >
+            نسخ الكود
+          </button>
+          <button class="shortcut-button" data-popup-id="popup1" aria-label="عرض اختصارات">
+            اضغط هنا للاختصارات
+          </button>
+        </div>
+        <pre><code class="language-json">
 {
   "Logging": {
     "LogLevel": {
@@ -303,8 +291,7 @@ using Eventy.DAL.Entities;
     "Connection": "Data Source=.;Database=Eventom;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False"
   }
 }
-
-    </code></pre>
+        </code></pre>
       </div>
     </div>
 
@@ -323,13 +310,10 @@ using Eventy.DAL.Entities;
     <!-- خلفية البوب أب -->
     <div id="overlay"></div>
 
-    <!-- Overlay -->
-    <div id="overlay"></div>
-
     <!-- Popups -->
 
     <div class="popup" id="popup1">
-      <button class="closeBtn">× إغلاق</button>
+      <button class="closeBtn" aria-label="إغلاق النافذة">× إغلاق</button>
       <div class="note">
         <h3>📝 شرح كل جزء:</h3>
         <ul>
@@ -337,7 +321,7 @@ using Eventy.DAL.Entities;
             <strong>Data Source=.</strong> تعني أن قاعدة البيانات على نفس
             الجهاز.
           </li>
-          <li><strong>Database=Event</strong> اسم قاعدة البيانات.</li>
+          <li><strong>Database=Eventom</strong> اسم قاعدة البيانات.</li>
           <li>
             <strong>Integrated Security=True</strong> يستخدم بيانات دخول
             الويندوز بدون اسم مستخدم وكلمة سر.
@@ -366,12 +350,14 @@ using Eventy.DAL.Entities;
     <!-- Scripts -->
     <script>
       function copyCode(button) {
-        const codeElement = button.parentElement.querySelector("code");
-        const code = codeElement.textContent;
+        const codeElement = button.parentElement.nextElementSibling.querySelector("code");
+        const code = codeElement.textContent.trim();
         navigator.clipboard.writeText(code).then(() => {
           button.innerText = "تم النسخ ✅";
+          button.classList.add("copied");
           setTimeout(() => {
             button.innerText = "نسخ الكود";
+            button.classList.remove("copied");
           }, 2000);
         });
       }
@@ -416,6 +402,6 @@ using Eventy.DAL.Entities;
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/prismjs/prism.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-csharp.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-json.min.js"></script>
   </body>
 </html>

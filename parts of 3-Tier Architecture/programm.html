@@ -7,85 +7,101 @@
     <style>
       body {
         font-family: "Segoe UI", sans-serif;
-        background: #f9f9f9;
+        background: #eef2f5;
         margin: 0;
         padding: 30px;
         line-height: 1.8;
-        color: #333;
+        color: #2e3a59;
       }
 
       h1 {
-        color: #00796b;
+        color: #004d40;
         text-align: center;
-        margin-bottom: 20px;
+        margin-bottom: 30px;
+        font-size: 2rem;
       }
 
       .step {
         background: #ffffff;
-        border-radius: 15px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        padding: 25px;
-        margin: 20px auto;
-        max-width: 800px;
+        border-radius: 20px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        padding: 30px;
+        margin: 30px auto;
+        max-width: 850px;
+        transition: transform 0.2s;
+      }
+
+      .step:hover {
+        transform: translateY(-3px);
       }
 
       .step h2 {
         color: #00695c;
-        font-size: 1.3rem;
+        font-size: 1.4rem;
+        margin-bottom: 15px;
+      }
+
+      .step p,
+      .step ul {
+        font-size: 1rem;
+        margin-bottom: 15px;
+      }
+
+      .step ul {
+        padding-right: 20px;
+      }
+
+      .step li {
         margin-bottom: 10px;
       }
 
-      .layer-diagram {
-        text-align: center;
-        margin-top: 30px;
-      }
-
-      .layer-diagram img {
-        width: 80%;
-        max-width: 500px;
-        border-radius: 12px;
-      }
-
-      .back-button {
-        display: block;
-        margin: 40px auto 0;
-        text-align: center;
-      }
-
-      .back-button button {
-        background-color: #00796b;
-        color: white;
-        padding: 14px 28px;
-        font-size: 1.1rem;
-        border: none;
-        border-radius: 30px;
-        cursor: pointer;
-      }
-
-      .back-button button:hover {
-        background-color: #004d40;
+      .step img {
+        max-width: 100%;
+        border-radius: 15px;
+        margin: 15px 0;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
       }
 
       .back-button {
         display: flex;
         justify-content: center;
-        gap: 20px;
-        margin: 40px auto 0;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-top: 50px;
       }
 
       .back-button button {
         background-color: #00796b;
         color: white;
-        padding: 14px 28px;
-        font-size: 1.1rem;
+        padding: 12px 26px;
+        font-size: 1rem;
         border: none;
-        border-radius: 30px;
+        border-radius: 25px;
         cursor: pointer;
-        transition: background-color 0.3s ease;
+        transition: background-color 0.3s ease, transform 0.2s ease;
       }
 
       .back-button button:hover {
         background-color: #004d40;
+        transform: translateY(-2px);
+      }
+
+      @media (max-width: 600px) {
+        body {
+          padding: 20px;
+        }
+
+        .step {
+          padding: 20px;
+        }
+
+        h1 {
+          font-size: 1.6rem;
+        }
+
+        .step h2 {
+          font-size: 1.2rem;
+        }
       }
     </style>
   </head>
@@ -99,13 +115,10 @@
         <strong>Blank Solution</strong> لأنه مثل الدفتر الفاضي اللي نكتب فيه كل
         أفكارنا وننظم مشاريعنا.
       </p>
-
       <img
         src="../assets/imgs/gif/blankSolution.gif"
         alt="شرح Blank Solution"
-        style="max-width: 100%; border-radius: 15px"
       />
-
       <p>
         بمجرد ما نفتح الـBlank Solution، بنبدأ نضيف المشاريع الخاصة بكل طبقة،
         ونربطها مع بعض بطريقة منظمة.
@@ -117,18 +130,10 @@
       <p>نضيف مشروع <strong>Class Library</strong> لكل من:</p>
       <ul>
         <li><strong>Business Logic Layer:</strong></li>
-        <img
-          src="../assets/imgs/gif/BLL.gif"
-          alt="شرح Blank Solution"
-          style="max-width: 100%; border-radius: 15px"
-        />
+        <img src="../assets/imgs/gif/BLL.gif" alt="شرح BLL" />
 
         <li><strong>Data Access Layer:</strong></li>
-        <img
-          src="../assets/imgs/gif/DAL.gif"
-          alt="شرح Blank Solution"
-          style="max-width: 100%; border-radius: 15px"
-        />
+        <img src="../assets/imgs/gif/DAL.gif" alt="شرح DAL" />
       </ul>
     </div>
 
@@ -140,24 +145,18 @@
       </p>
       <img
         src="../assets/imgs/gif/ASP.NET Core MVC.gif"
-        alt="شرح Blank Solution"
-        style="max-width: 100%; border-radius: 15px"
+        alt="شرح ASP.NET Core MVC"
       />
     </div>
 
     <div class="back-button">
       <button
         onclick="location.href='../parts of 3-Tier Architecture/references.html'"
-        style="margin-right: 15px"
       >
         التالي
       </button>
-
-      <button onclick="location.href='../index.html'">
-        الرجوع إلى الصفحة الرئيسية
-      </button>
-
-      <button onclick="history.back()">العودة للصفحة السابقة</button>
+      <button onclick="location.href='../index.html'">الصفحة الرئيسية</button>
+      <button onclick="history.back()">السابق</button>
     </div>
   </body>
 </html>

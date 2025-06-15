@@ -6,7 +6,7 @@
     <title>مفهوم Asynchronous</title>
     <style>
       body {
-        font-family: "Segoe UI", sans-serif;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         background: #f5f7fa;
         margin: 0;
         padding: 2rem;
@@ -16,13 +16,14 @@
       h1 {
         text-align: center;
         color: #2c3e50;
+        margin-bottom: 1rem;
       }
 
       .card {
         background: white;
         border-radius: 16px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        padding: 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        padding: 2rem 2.5rem;
         max-width: 800px;
         margin: auto;
       }
@@ -30,63 +31,93 @@
       .example,
       .experiment {
         margin-top: 2rem;
-        padding: 1.5rem;
+        padding: 1.5rem 2rem;
         background: #ecf0f1;
         border-radius: 12px;
+        line-height: 1.6;
+        color: #2c3e50;
+        font-size: 1.1rem;
+      }
+
+      .example h2,
+      .experiment h2 {
+        margin-top: 0;
+        color: #2980b9;
+        font-weight: 700;
+        margin-bottom: 0.8rem;
+      }
+
+      ul {
+        padding-inline-start: 1.5rem;
+        margin: 0.5rem 0;
+        color: #34495e;
+      }
+
+      ul li {
+        margin-bottom: 0.7rem;
       }
 
       button {
-        padding: 0.8rem 1.5rem;
+        padding: 0.8rem 1.8rem;
         background-color: #3498db;
         color: white;
         border: none;
-        border-radius: 8px;
+        border-radius: 10px;
         font-size: 1rem;
         cursor: pointer;
-        transition: background-color 0.3s ease;
-        margin: 0.3rem;
+        transition: background-color 0.3s ease, transform 0.15s ease;
+        margin: 0.4rem 0.8rem;
+        box-shadow: 0 3px 8px rgba(52, 152, 219, 0.4);
       }
 
       button:hover {
         background-color: #2980b9;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(41, 128, 185, 0.6);
+      }
+
+      button:active {
+        transform: translateY(1px);
+        box-shadow: 0 2px 5px rgba(41, 128, 185, 0.5);
       }
 
       .log {
         margin-top: 1rem;
-        font-family: monospace;
+        font-family: "Courier New", Courier, monospace;
         background-color: #fff;
-        padding: 1rem;
+        padding: 1rem 1.2rem;
         border: 1px solid #ccc;
         border-radius: 10px;
-        min-height: 50px;
-        max-height: 180px;
+        min-height: 80px;
+        max-height: 220px;
         overflow-y: auto;
         white-space: pre-wrap;
+        color: #2c3e50;
+        box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.05);
       }
 
       .loading {
-        color: orange;
+        color: #e67e22;
+        font-weight: 700;
       }
 
       .done {
-        color: green;
-      }
-
-      .step {
-        margin-bottom: 10px;
+        color: #27ae60;
+        font-weight: 700;
       }
 
       .status {
         margin-top: 15px;
-        font-weight: bold;
+        font-weight: 700;
         font-size: 1.2rem;
-        color: #444;
+        color: #34495e;
         text-align: center;
+        min-height: 26px;
       }
 
       .buttons-container {
         text-align: center;
-        margin-top: 10px;
+        margin-top: 1rem;
       }
 
       .back-button {
@@ -98,11 +129,13 @@
       .back-button button {
         background-color: #00796b;
         color: white;
-        padding: 14px 28px;
+        padding: 14px 32px;
         font-size: 1.1rem;
         border: none;
         border-radius: 30px;
         cursor: pointer;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 121, 107, 0.6);
       }
 
       .back-button button:hover {
@@ -164,28 +197,49 @@
     </div>
 
     <script>
-      // تجربة طلب القهوة والكيك
       const btnCoffee = document.getElementById("btnCoffee");
       const btnCake = document.getElementById("btnCake");
       const log2 = document.getElementById("log2");
       const status = document.getElementById("status");
 
-      function logMessage2(msg) {
+      // تخزين الطلبات النشطة
+      let activeOrders = 0;
+
+      function logMessage2(msg, type = "") {
         const now = new Date().toLocaleTimeString();
-        log2.textContent += `[${now}] ${msg}\n`;
+        const coloredMsg =
+          type === "loading"
+            ? `<span class="loading">${msg}</span>`
+            : type === "done"
+            ? `<span class="done">${msg}</span>`
+            : msg;
+        log2.innerHTML += `[${now}] ${coloredMsg}\n`;
         log2.scrollTop = log2.scrollHeight;
       }
 
       function prepareOrder(name, time) {
-        logMessage2(`تم استلام طلب ${name}. جاري التحضير...`);
-        status.textContent = `⚙️ يتم تحضير ${name}...`;
+        activeOrders++;
+        logMessage2(`تم استلام طلب ${name}. جاري التحضير...`, "loading");
+        updateStatus();
+
         return new Promise((resolve) => {
           setTimeout(() => {
-            logMessage2(`✅ تم الانتهاء من تحضير ${name}!`);
-            status.textContent = `✅ ${name} جاهزة للتقديم!`;
+            logMessage2(`✅ تم الانتهاء من تحضير ${name}!`, "done");
+            activeOrders--;
+            updateStatus();
             resolve(name);
           }, time);
         });
+      }
+
+      function updateStatus() {
+        if (activeOrders === 0) {
+          status.textContent = "...لم تبدأ أي طلبات بعد";
+          return;
+        }
+        status.textContent = `⚙️ جاري تحضير ${activeOrders} طلب${
+          activeOrders > 1 ? "ات" : ""
+        }...`;
       }
 
       btnCoffee.onclick = () => {
